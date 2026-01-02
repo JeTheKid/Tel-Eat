@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('layouts.sidebar')
 
 @section('title', 'Pengaturan')
 @section('page-title', 'Pengaturan Toko')
@@ -77,8 +77,8 @@
                             <div class="d-flex align-items-start gap-4">
                                 <div class="text-center">
                                     <div class="border rounded-3 p-2 bg-light mb-2 d-flex align-items-center justify-content-center"
-                                        style="width: 120px; height: 120px;">
-                                        @if ($toko->foto_qris)
+                                        style="width: 120px; height: 120px; overflow: hidden;">
+                                        @if ($toko && $toko->foto_qris)
                                             <img src="{{ asset('storage/' . $toko->foto_qris) }}"
                                                 class="w-100 h-100 object-fit-contain rounded-2">
                                         @else
@@ -88,7 +88,21 @@
                                             </div>
                                         @endif
                                     </div>
-                                    <small class="text-muted d-block" style="font-size: 0.7rem;">Preview Saat Ini</small>
+
+                                    <small class="text-muted d-block mb-1" style="font-size: 0.7rem;">Preview Saat
+                                        Ini</small>
+
+                                    @if ($toko && $toko->foto_qris)
+                                        <form action="{{ route('admin.settings.delete_qris') }}" method="POST"
+                                            onsubmit="return confirm('Yakin mau menghapus QRIS ini?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-link text-danger text-decoration-none p-0"
+                                                style="font-size: 0.7rem;">
+                                                <i class="bi bi-trash-fill"></i> Hapus
+                                            </button>
+                                        </form>
+                                    @endif
                                 </div>
 
                                 <div class="flex-grow-1">

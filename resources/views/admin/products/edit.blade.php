@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('layouts.sidebar')
 
 @section('title', 'Edit Menu')
 @section('page-title', 'Edit Menu Kantin')

@@ -11,7 +11,7 @@ class SettingController extends Controller
 {
     public function index()
     {
-        // Ambil data toko (pasti ada karena tadi sudah kita seed)
+        // Ambil data toko
         $toko = ShopSetting::first();
         return view('admin.settings.index', compact('toko'));
     }
@@ -29,7 +29,7 @@ class SettingController extends Controller
 
         $data = $request->only(['nama_bank', 'nomor_rekening', 'atas_nama']);
 
-        // Logic Upload QRIS 📸
+        // Logic Upload QRIS
         if ($request->hasFile('foto_qris')) {
 
             // Hapus QRIS lama jika ada
@@ -45,5 +45,25 @@ class SettingController extends Controller
         $toko->update($data);
 
         return back()->with('success', 'Pengaturan pembayaran berhasil diupdate!');
+    }
+
+    public function deleteQris()
+    {
+        // 1. Ambil data toko
+        $toko = ShopSetting::first();
+
+        // 2. Cek apakah ada foto sebelumnya?
+        if ($toko && $toko->foto_qris) {
+            // Hapus file fisik di folder storage
+            // Pastikan path-nya sesuai penyimpanan kamu (biasanya di disk 'public')
+            Storage::disk('public')->delete($toko->foto_qris);
+
+            // 3. Kosongkan kolom di database
+            $toko->foto_qris = null;
+            $toko->save();
+        }
+
+        // 4. Balik ke halaman settings
+        return back()->with('success', 'Foto QRIS berhasil dihapus!');
     }
 }

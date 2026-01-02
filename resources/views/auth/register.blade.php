@@ -76,9 +76,9 @@
                 @csrf
 
                 <div class="mb-3">
-                    <label class="form-label small text-muted">Nama</label>
+                    <label class="form-label small text-muted">Nama Lengkap</label>
                     <input type="text" name="nama" class="form-control" required
-                        placeholder="Contoh: Budi Santoso" value="{{ old('nama') }}">
+                        placeholder="Wajib nama lengkap" value="{{ old('nama') }}">
                 </div>
 
                 <div class="mb-3">

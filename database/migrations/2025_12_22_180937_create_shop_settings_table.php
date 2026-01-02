@@ -14,8 +14,8 @@ return new class extends Migration {
             $table->id();
             $table->string('nama_bank')->default('BCA');
             $table->string('nomor_rekening')->default('1234567890');
-            $table->string('atas_nama')->default('Admin Kantin');
-            $table->string('foto_qris')->nullable(); // Nanti diisi path gambar
+            $table->string('atas_nama')->default('Tel-Eat Canteen');
+            $table->string('foto_qris')->nullable(); 
             $table->timestamps();
         });
     }

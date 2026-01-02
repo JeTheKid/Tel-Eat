@@ -24,7 +24,7 @@ class DashboardController extends Controller
         // 3. Total Menu Tersedia
         $totalMenu = Product::count();
 
-        // 4. Ambil 5 Pesanan Terakhir (Buat tabel)
+        // 4. Ambil 5 Pesanan Terakhir
         $recentOrders = Order::with(['user', 'details.product'])
             ->latest()
             ->take(5) // Cuma ambil 5 biji

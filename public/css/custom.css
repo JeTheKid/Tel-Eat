@@ -1,4 +1,4 @@
-/* --- GLOBAL VARIABLES --- */
+/* --- GLOBAL --- */
 :root {
     --primary-orange: #ff7e00;
     --dark-orange: #e66000;
@@ -40,7 +40,7 @@ body {
     border-bottom: 2px solid var(--primary-orange);
 }
 
-/* --- PAGE: KATALOG (Kartu Menu) --- */
+/* --- PAGE KATALOG (Menu) --- */
 .card-menu {
     border: none;
     border-radius: 15px;
@@ -108,42 +108,42 @@ body {
     color: white;
 }
 
-/* --- STYLE ADMIN (LIGHT MODE) --- */
+/* --- STYLE ADMIN --- */
 
-/* Sidebar Putih Bersih */
+/* Sidebar */
 .sidebar {
     min-height: 100vh;
-    background-color: white; /* Ganti jadi Putih */
-    border-right: 1px solid #f0f0f0; /* Garis pemisah tipis */
-    box-shadow: 2px 0 10px rgba(0,0,0,0.02); /* Bayangan super halus */
+    background-color: white;
+    border-right: 1px solid #f0f0f0;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.02);
 }
 
 /* Link Sidebar */
 .sidebar a {
-    color: #6c757d; /* Abu-abu kalem */
+    color: #6c757d;
     text-decoration: none;
     padding: 12px 24px;
     display: block;
     font-weight: 500;
     transition: 0.3s;
-    border-radius: 0 50px 50px 0; /* Lengkungan manis di kanan */
-    margin-right: 15px; /* Jarak biar gak mepet kanan */
+    border-radius: 0 50px 50px 0;
+    margin-right: 15px;
 }
 
 /* Efek Hover */
 .sidebar a:hover {
     color: var(--primary-orange);
-    background-color: #fff5eb; /* Orange sangat muda */
+    background-color: #fff5eb;
 }
 
 /* Link Aktif (Sedang dibuka) */
 .sidebar a.active {
     color: var(--primary-orange);
-    background-color: #fff5eb; /* Orange sangat muda */
+    background-color: #fff5eb;
     font-weight: bold;
 }
 
 .main-content {
-    background-color: #fafafa; /* Background utama abu sangat muda */
+    background-color: #fafafa;
     min-height: 100vh;
 }

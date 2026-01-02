@@ -264,11 +264,79 @@
                             <i class="bi bi-book me-2"></i> Lihat Menu
                         </a>
                     </div>
+
+                    <div class="mt-5 d-flex justify-content-start gap-5">
+
+                        <div class="d-flex align-items-center">
+                            <div class="bg-warning bg-opacity-10 p-2 rounded-circle me-3">
+                                <i class="bi bi-egg-fried text-warning fs-4"></i>
+                            </div>
+                            <div>
+                                <h4 class="fw-bold mb-0 text-dark">{{ $totalProducts }}+</h4>
+                                <small class="text-muted" style="font-size: 0.8rem;">Pilihan Menu</small>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center">
+                            <div class="bg-success bg-opacity-10 p-2 rounded-circle me-3">
+                                <i class="bi bi-receipt text-success fs-4"></i>
+                            </div>
+                            <div>
+                                <h4 class="fw-bold mb-0 text-dark">{{ $totalOrders }}+</h4>
+                                <small class="text-muted" style="font-size: 0.8rem;">Pesanan Selesai</small>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
                 <div class="col-md-6 text-center">
-                    <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-                        alt="Foto Kantin" class="hero-img img-fluid w-75">
+                    <img src="{{ asset('images/foto_kantin.png') }}" class="hero-img img-fluid w-75" alt="foto kantin">
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="preview-menu" class="py-5 bg-white">
+        <div class="container py-5">
+            <div class="row align-items-end mb-5">
+                <div class="col-md-8">
+                    <h6 class="text-primary fw-bold text-uppercase ls-2"
+                        style="color: var(--primary-orange) !important;">Mau Makan Apa?</h6>
+                    <h2 class="fw-bold">Menu Favorit Anak Tel-U</h2>
+                    <p class="text-muted">Intip dikit menu yang tersedia hari ini.</p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <a href="{{ route('katalog') }}" class="btn btn-outline-dark rounded-pill px-4">
+                        Lihat Selengkapnya <i class="bi bi-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                @forelse($products as $product)
+                    <div class="col-md-3 col-6">
+                        <div class="menu-card">
+                            <div class="menu-img-wrapper">
+                                <img src="{{ asset('storage/' . $product->gambar) }}" class="menu-img"
+                                    alt="{{ $product->nama_produk }}">
+                                <div class="menu-price">Rp {{ number_format($product->harga, 0, ',', '.') }}</div>
+                            </div>
+                            <div class="p-3">
+                                <h6 class="fw-bold mb-1 text-truncate">{{ $product->nama_produk }}</h6>
+                                <small class="text-muted">{{ $product->kategori->nama_kategori ?? 'Umum' }}</small>
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <div class="col-12 text-center py-5">
+                        <div class="text-muted">Belum ada menu yang ditampilkan. Login untuk melihat katalog lengkap.
+                        </div>
+                    </div>
+                @endforelse
+            </div>
+
+            <div class="d-block d-md-none text-center mt-4">
+                <a href="{{ route('katalog') }}" class="btn btn-orange w-100">Lihat Semua Menu</a>
             </div>
         </div>
     </section>

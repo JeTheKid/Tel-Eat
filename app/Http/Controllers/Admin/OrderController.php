@@ -12,7 +12,7 @@ class OrderController extends Controller
     public function index()
     {
         // Ambil data order + user yg mesan + itemnya
-        // Urutkan dari yg terbaru (latest)
+        // Urutkan dari yg terbaru
         $orders = Order::with(['user', 'details.product'])
             ->orderBy('created_at', 'desc')
             ->get();

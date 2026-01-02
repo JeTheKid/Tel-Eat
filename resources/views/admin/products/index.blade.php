@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('layouts.sidebar')
 
 @section('title', 'Kelola Menu')
 @section('page-title', 'Daftar Menu Kantin')

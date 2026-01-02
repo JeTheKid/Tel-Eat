@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('layouts.sidebar')
 
 @section('title', 'Tambah Menu')
 @section('page-title', 'Tambah Menu Baru')

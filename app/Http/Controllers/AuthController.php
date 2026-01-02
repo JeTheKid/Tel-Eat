@@ -30,9 +30,9 @@ class AuthController extends Controller
             $user = auth()->user();
 
             if ($user->role === 'admin') {
-                return redirect()->intended('dashboard');
+                return redirect()->intended('dashboard'); //Admin
             } else {
-                return redirect()->intended('katalog'); // Mahasiswa dilempar ke sini
+                return redirect()->intended('katalog'); // Mahasiswa
             }
         }
 
@@ -65,7 +65,7 @@ class AuthController extends Controller
             'email' => $validated['email'],
             'no_hp' => $validated['no_hp'],
             'password' => bcrypt($validated['password']), // Enkripsi password
-            'role' => 'mahasiswa', //
+            'role' => 'mahasiswa', // Default role mahasiswa
         ]);
 
         // Balikin ke login suruh masuk
