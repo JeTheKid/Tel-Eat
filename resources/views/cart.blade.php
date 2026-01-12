@@ -28,29 +28,71 @@
                         @if (session('cart'))
                             @foreach (session('cart') as $id => $details)
                                 <div class="d-flex align-items-center mb-3 border-bottom pb-3">
+
                                     <div class="me-3">
                                         @if ($details['image'])
-                                            <img src="{{ asset('storage/' . $details['image']) }}" width="80"
-                                                height="80" class="rounded object-fit-cover">
+                                            <img src="{{ asset('gambar/' . $details['image']) }}" width="80"
+                                                height="80" class="rounded object-fit-cover shadow-sm">
                                         @else
-                                            <div class="bg-light rounded d-flex align-items-center justify-content-center"
+                                            <div class="bg-light rounded d-flex align-items-center justify-content-center border"
                                                 style="width:80px; height:80px">
                                                 <i class="bi bi-image-fill fs-1 opacity-25"></i>
                                             </div>
                                         @endif
                                     </div>
+
                                     <div class="flex-grow-1">
-                                        <h6 class="fw-bold mb-1">{{ $details['name'] }}</h6>
-                                        <small class="text-muted">Rp {{ number_format($details['price'], 0, ',', '.') }}
-                                            x {{ $details['quantity'] }}</small>
+                                        <h6 class="fw-bold mb-1 text-dark">{{ $details['name'] }}</h6>
+
+                                        <div class="d-flex align-items-center mt-2">
+                                            <small class="text-muted me-3">
+                                                Rp {{ number_format($details['price'], 0, ',', '.') }} / porsi
+                                            </small>
+
+                                            <div class="input-group input-group-sm shadow-sm rounded-pill overflow-hidden border"
+                                                style="width: 100px;">
+                                                <form action="{{ route('cart.change_qty') }}" method="POST"
+                                                    class="d-flex">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <input type="hidden" name="id" value="{{ $id }}">
+                                                    <input type="hidden" name="action" value="decrease">
+                                                    <button type="submit"
+                                                        class="btn btn-light border-0 text-danger px-2 py-1">
+                                                        <i class="bi bi-dash-lg"></i>
+                                                    </button>
+                                                </form>
+
+                                                <input type="text"
+                                                    class="form-control border-0 text-center bg-white px-0 py-1 fw-bold text-dark"
+                                                    value="{{ $details['quantity'] }}" readonly
+                                                    style="font-size: 0.9rem;">
+
+                                                <form action="{{ route('cart.change_qty') }}" method="POST"
+                                                    class="d-flex">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <input type="hidden" name="id" value="{{ $id }}">
+                                                    <input type="hidden" name="action" value="increase">
+                                                    <button type="submit"
+                                                        class="btn btn-light border-0 text-success px-2 py-1">
+                                                        <i class="bi bi-plus-lg"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="fw-bold text-orange me-3">
+
+                                    <div class="fw-bold text-orange me-4 text-end" style="min-width: 80px;">
                                         Rp {{ number_format($details['price'] * $details['quantity'], 0, ',', '.') }}
                                     </div>
-                                    <button class="btn btn-sm btn-outline-danger border-0 remove-from-cart"
-                                        data-id="{{ $id }}">
+
+                                    <button
+                                        class="btn btn-sm btn-outline-danger border-0 remove-from-cart rounded-circle p-2"
+                                        data-id="{{ $id }}" title="Hapus Menu">
                                         <i class="bi bi-trash"></i>
                                     </button>
+
                                 </div>
                             @endforeach
                         @else

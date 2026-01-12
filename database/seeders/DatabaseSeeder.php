@@ -28,12 +28,5 @@ class DatabaseSeeder extends Seeder
             ['nama_kategori' => 'Minuman', 'created_at' => now(), 'updated_at' => now()],
             ['nama_kategori' => 'Snack', 'created_at' => now(), 'updated_at' => now()],
         ]);
-
-        //Setting Admin
-        ShopSetting::create([
-            'nama_bank' => 'BCA',
-            'nomor_rekening' => '1234567890',
-            'atas_nama' => 'Tel-Eat Canteen',
-        ]);
     }
 }

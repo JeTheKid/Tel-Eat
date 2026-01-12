@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\LandingController;
+use App\Http\Controllers\KatalogController;
 
 /*
 AREA PUBLIK (Bisa diakses tanpa login)
@@ -19,18 +20,7 @@ AREA PUBLIK (Bisa diakses tanpa login)
 Route::get('/', [LandingController::class, 'index'])->name('landing');
 
 // Katalog
-Route::get('/katalog', function (\Illuminate\Http\Request $request) {
-    // filter kategori
-    $query = App\Models\Product::with('category')->latest();
-    if ($request->has('kategori')) {
-        $query->whereHas('category', function ($q) use ($request) {
-            $q->where('nama_kategori', $request->kategori);
-        });
-    }
-    $products = $query->get();
-    $categories = App\Models\Category::all();
-    return view('katalog', compact('products', 'categories'));
-})->name('katalog');
+Route::get('/katalog', [KatalogController::class, 'index'])->name('katalog');
 
 //Login & Register
 Route::middleware('guest')->group(function () {
@@ -56,6 +46,7 @@ Route::middleware(['auth'])->group(function () {
     // Route Keranjang
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/add-to-cart/{id}', [CartController::class, 'addToCart'])->name('add_to_cart');
+    Route::patch('/cart/change-qty', [CartController::class, 'changeQuantity'])->name('cart.change_qty');
     Route::patch('/update-cart', [CartController::class, 'update'])->name('update_cart');
     Route::delete('/remove-from-cart', [CartController::class, 'remove'])->name('remove_from_cart');
 
@@ -77,8 +68,27 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/admin/orders/{id}', [OrderController::class, 'updateStatus'])->name('admin.orders.update');
 
     // Route Pengaturan Toko
-    Route::get('/admin/settings', [SettingController::class, 'index'])->name('admin.settings.index');
-    Route::put('/admin/settings', [SettingController::class, 'update'])->name('admin.settings.update');
-    Route::delete('/admin/settings', [SettingController::class, 'deleteQris'])->name('admin.settings.delete_qris');
+    Route::resource('/admin/settings', SettingController::class)->names('settings');
 
 });
+
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\File;
+
+// Route Pengganti Storage (Karena hosting memblokir kata 'storage')
+Route::get('/gambar/{path}', function ($path) {
+    // Cari file di gudang asli (storage/app/public)
+    $path = storage_path('app/public/' . $path);
+
+    if (!File::exists($path)) {
+        abort(404);
+    }
+
+    $file = File::get($path);
+    $type = File::mimeType($path);
+
+    $response = Response::make($file, 200);
+    $response->header("Content-Type", $type);
+
+    return $response;
+})->where('path', '.*');

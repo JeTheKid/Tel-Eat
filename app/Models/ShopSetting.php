@@ -9,5 +9,12 @@ class ShopSetting extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $table = 'shop_settings';
+
+    protected $fillable = [
+        'nama_bank',
+        'nomor_rekening',
+        'atas_nama',
+        'foto_qris'
+    ];
 }

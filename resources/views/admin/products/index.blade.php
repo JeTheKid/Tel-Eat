@@ -1,7 +1,7 @@
 @extends('layouts.sidebar')
 
 @section('title', 'Kelola Menu')
-@section('page-title', 'Daftar Menu Kantin')
+@section('page-title', 'Daftar Menu')
 
 @section('content')
 
@@ -31,6 +31,7 @@
                         <th class="text-secondary text-uppercase small fw-bold">Kategori</th>
                         <th class="text-secondary text-uppercase small fw-bold">Harga</th>
                         <th class="text-secondary text-uppercase small fw-bold">Stok</th>
+                        <th class="text-secondary text-uppercase small fw-bold">Status</th>
                         <th class="text-secondary text-uppercase small fw-bold text-end pe-4">Aksi</th>
                     </tr>
                 </thead>
@@ -41,7 +42,7 @@
                                 <div class="d-flex align-items-center">
                                     <div class="flex-shrink-0 me-3">
                                         @if ($product->gambar)
-                                            <img src="{{ asset('storage/' . $product->gambar) }}"
+                                            <img src="{{ asset('gambar/' . $product->gambar) }}"
                                                 class="rounded-3 shadow-sm object-fit-cover border" width="60"
                                                 height="60">
                                         @else
@@ -81,28 +82,46 @@
                                 @endif
                             </td>
 
-                            <td class="text-end pe-4">
-                                <div class="d-inline-flex gap-2">
-                                    <a href="{{ route('products.edit', $product->id_produk) }}"
-                                        class="btn btn-sm btn-light text-primary border shadow-sm" title="Edit Menu">
-                                        <i class="bi bi-pencil-fill"></i>
-                                    </a>
+                            <td>
+                                @if ($product->status == 'aktif')
+                                    <span class="badge bg-success">Aktif</span>
+                                @else
+                                    <span class="badge bg-secondary">Diarsipkan</span>
+                                @endif
+                            </td>
 
+                            <td class="text-end pe-4">
+                                <a href="{{ route('products.edit', $product->id_produk) }}"
+                                    class="btn btn-sm btn-warning me-1">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+
+                                @if ($product->status == 'aktif')
                                     <form action="{{ route('products.destroy', $product->id_produk) }}" method="POST"
-                                        onsubmit="return confirm('Yakin mau hapus menu {{ $product->nama_produk }}?');">
+                                        class="d-inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-light text-danger border shadow-sm"
-                                            title="Hapus Menu">
-                                            <i class="bi bi-trash-fill"></i>
+                                        <button type="submit" class="btn btn-sm btn-danger"
+                                            onclick="return confirm('Apakah Anda yakin? Jika menu belum pernah terjual, akan dihapus permanen.')">
+                                            <i class="bi bi-eye-slash"></i> Arsip
                                         </button>
                                     </form>
-                                </div>
+                                @else
+                                    <form action="{{ route('products.destroy', $product->id_produk) }}" method="POST"
+                                        class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-success"
+                                            onclick="return confirm('Tampilkan menu ini lagi?')">
+                                            <i class="bi bi-eye"></i> Aktifkan
+                                        </button>
+                                    </form>
+                                @endif
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="text-center py-5">
+                            <td colspan="6" class="text-center py-5">
                                 <div class="py-4">
                                     <i class="bi bi-clipboard-x text-muted opacity-25" style="font-size: 4rem;"></i>
                                     <p class="fw-bold text-muted mt-3 mb-1">Belum ada menu tersimpan</p>

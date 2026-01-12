@@ -10,12 +10,17 @@ class LandingController extends Controller
 {
     public function index()
     {
-        // Ambil 4 menu terbaru buat ditampilkan di halaman depan
-        $products = Product::latest()->take(4)->get();
+        // 1. Ambil 4 menu terbaru
+        $products = Product::where('status', 'aktif')
+                           ->latest()
+                           ->take(4)
+                           ->get();
 
-        //hitung data total
-        $totalProducts = Product::count(); // Hitung semua produk
-        $totalOrders = Order::where('status', 'selesai')->count(); // Hitung order sukses
+        // 2. Hitung jumlah produk
+        $totalProducts = Product::where('status', 'aktif')->count();
+
+        // Hitung order sukses
+        $totalOrders = Order::where('status', 'selesai')->count();
 
         // Kirim data ke view 'landing'
         return view('landing', compact('products', 'totalProducts', 'totalOrders'));

@@ -11,59 +11,77 @@ class SettingController extends Controller
 {
     public function index()
     {
-        // Ambil data toko
-        $toko = ShopSetting::first();
-        return view('admin.settings.index', compact('toko'));
+        $rekenings = ShopSetting::all();
+        return view('admin.settings.index', compact('rekenings'));
     }
 
-    public function update(Request $request)
+    public function store(Request $request)
     {
-        $toko = ShopSetting::first();
-
+        // VALIDASI YANG LEBIH PINTAR
         $request->validate([
-            'nama_bank' => 'required',
-            'nomor_rekening' => 'required',
-            'atas_nama' => 'required',
-            'foto_qris' => 'nullable|image|max:2048', // Max 2MB
+            'nama_bank' => 'required', // Contoh: "BCA" atau "QRIS Utama"
+            // Nomor rekening & Atas nama jadi BOLEH KOSONG (nullable)
+            'nomor_rekening' => 'nullable',
+            'atas_nama' => 'nullable',
+            'foto_qris' => 'nullable|image|max:2048',
         ]);
 
         $data = $request->only(['nama_bank', 'nomor_rekening', 'atas_nama']);
 
-        // Logic Upload QRIS
+        // Kalau Nomor Rekening kosong, kita isi strip (-) biar database gak error
+        // (Kecuali kamu ubah database jadi nullable, tapi ini cara aman tanpa otak-atik database)
+        if (!$request->nomor_rekening)
+            $data['nomor_rekening'] = '-';
+        if (!$request->atas_nama)
+            $data['atas_nama'] = '-';
+
         if ($request->hasFile('foto_qris')) {
-
-            // Hapus QRIS lama jika ada
-            if ($toko->foto_qris && Storage::disk('public')->exists($toko->foto_qris)) {
-                Storage::disk('public')->delete($toko->foto_qris);
-            }
-
-            // Simpan yang baru
-            $path = $request->file('foto_qris')->store('toko', 'public');
-            $data['foto_qris'] = $path;
+            $data['foto_qris'] = $request->file('foto_qris')->store('toko', 'public');
         }
 
-        $toko->update($data);
+        ShopSetting::create($data);
 
-        return back()->with('success', 'Pengaturan pembayaran berhasil diupdate!');
+        return back()->with('success', 'Metode pembayaran berhasil ditambahkan!');
     }
 
-    public function deleteQris()
+    public function update(Request $request, $id)
     {
-        // 1. Ambil data toko
-        $toko = ShopSetting::first();
+        $rekening = ShopSetting::findOrFail($id);
 
-        // 2. Cek apakah ada foto sebelumnya?
-        if ($toko && $toko->foto_qris) {
-            // Hapus file fisik di folder storage
-            // Pastikan path-nya sesuai penyimpanan kamu (biasanya di disk 'public')
-            Storage::disk('public')->delete($toko->foto_qris);
+        $request->validate([
+            'nama_bank' => 'required',
+            'nomor_rekening' => 'nullable', // Jadi nullable
+            'atas_nama' => 'nullable',      // Jadi nullable
+            'foto_qris' => 'nullable|image|max:2048',
+        ]);
 
-            // 3. Kosongkan kolom di database
-            $toko->foto_qris = null;
-            $toko->save();
+        $data = $request->only(['nama_bank', 'nomor_rekening', 'atas_nama']);
+
+        // Default strip kalau kosong
+        if (!$request->nomor_rekening)
+            $data['nomor_rekening'] = '-';
+        if (!$request->atas_nama)
+            $data['atas_nama'] = '-';
+
+        if ($request->hasFile('foto_qris')) {
+            if ($rekening->foto_qris && Storage::disk('public')->exists($rekening->foto_qris)) {
+                Storage::disk('public')->delete($rekening->foto_qris);
+            }
+            $data['foto_qris'] = $request->file('foto_qris')->store('toko', 'public');
         }
 
-        // 4. Balik ke halaman settings
-        return back()->with('success', 'Foto QRIS berhasil dihapus!');
+        $rekening->update($data);
+
+        return back()->with('success', 'Data berhasil diperbarui!');
+    }
+
+    public function destroy($id)
+    {
+        $rekening = ShopSetting::findOrFail($id);
+        if ($rekening->foto_qris && Storage::disk('public')->exists($rekening->foto_qris)) {
+            Storage::disk('public')->delete($rekening->foto_qris);
+        }
+        $rekening->delete();
+        return back()->with('success', 'Dihapus!');
     }
 }

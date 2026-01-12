@@ -1,7 +1,7 @@
 @extends('layouts.sidebar')
 
 @section('title', 'Edit Menu')
-@section('page-title', 'Edit Menu Kantin')
+@section('page-title', 'Edit Menu')
 
 @section('content')
     <div class="row justify-content-center">
@@ -55,7 +55,7 @@
                             <input type="file" name="image" class="form-control" accept="image/*">
                             @if ($product->gambar)
                                 <small class="text-muted d-block mt-2">Foto saat ini:</small>
-                                <img src="{{ asset('storage/' . $product->gambar) }}" width="100"
+                                <img src="{{ asset('gambar/' . $product->gambar) }}" width="100"
                                     class="rounded border mt-1">
                             @endif
                         </div>

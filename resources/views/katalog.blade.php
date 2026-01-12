@@ -50,7 +50,7 @@
                         <div class="card-img-wrapper">
                             <span class="category-badge">{{ $product->category->nama_kategori ?? 'Umum' }}</span>
                             @if ($product->gambar)
-                                <img src="{{ asset('storage/' . $product->gambar) }}" class="card-img-top">
+                                <img src="{{ asset('gambar/' . $product->gambar) }}" class="card-img-top">
                             @else
                                 <div
                                     class="d-flex align-items-center justify-content-center h-100 bg-light text-secondary">

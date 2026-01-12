@@ -99,7 +99,7 @@
             transform: rotate(0deg) scale(1.02);
         }
 
-        /* Menu Card (Spoiler) */
+        /* Menu Card */
         .menu-card {
             border: none;
             border-radius: 15px;
@@ -290,7 +290,7 @@
                     </div>
                 </div>
                 <div class="col-md-6 text-center">
-                    <img src="{{ asset('images/foto_kantin.png') }}" class="hero-img img-fluid w-75" alt="foto kantin">
+                    <img src="{{ asset('images/LANDINGPAGE_TEL-EAT.png') }}" class="hero-img img-fluid w-75" alt="foto kantin">
                 </div>
             </div>
         </div>
@@ -317,7 +317,7 @@
                     <div class="col-md-3 col-6">
                         <div class="menu-card">
                             <div class="menu-img-wrapper">
-                                <img src="{{ asset('storage/' . $product->gambar) }}" class="menu-img"
+                                <img src="{{ asset('gambar/' . $product->gambar) }}" class="menu-img"
                                     alt="{{ $product->nama_produk }}">
                                 <div class="menu-price">Rp {{ number_format($product->harga, 0, ',', '.') }}</div>
                             </div>
@@ -335,9 +335,7 @@
                 @endforelse
             </div>
 
-            <div class="d-block d-md-none text-center mt-4">
-                <a href="{{ route('katalog') }}" class="btn btn-orange w-100">Lihat Semua Menu</a>
-            </div>
+
         </div>
     </section>
 

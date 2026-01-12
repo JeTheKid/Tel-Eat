@@ -1,130 +1,150 @@
 @extends('layouts.sidebar')
 
-@section('title', 'Pengaturan')
-@section('page-title', 'Pengaturan Toko')
-
 @section('content')
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="fw-bold text-dark">Kelola Metode Pembayaran</h3>
+            <button type="button" class="btn btn-orange rounded-pill px-4 fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#modalTambah">
+                <i class="bi bi-plus-lg"></i> Tambah Rekening
+            </button>
+        </div>
 
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
+        @if (session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
 
-            <div class="mb-4 text-center">
-                <h4 class="fw-bold text-dark mb-1">Metode Pembayaran</h4>
-                <p class="text-muted small">Atur nomor rekening dan QRIS untuk pembayaran pelanggan.</p>
-            </div>
-
-            @if (session('success'))
-                <div class="alert alert-success border-0 shadow-sm alert-dismissible fade show mb-4" role="alert">
-                    <i class="bi bi-check-circle-fill me-2"></i> {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            @endif
-
-            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-                <div class="card-header bg-white py-3 border-bottom text-center">
-                    <div class="d-inline-flex align-items-center justify-content-center bg-black bg-opacity-10 text-orange rounded-circle mb-2"
-                        style="width: 50px; height: 50px;">
-                        <i class="bi bi-wallet2 fs-4"></i>
-                    </div>
-                    <h6 class="fw-bold mb-0 text-dark">Data Rekening & QRIS</h6>
-                </div>
-
-                <div class="card-body p-4">
-                    <form action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        @method('PUT')
-
-                        <div class="mb-4">
-                            <label class="form-label small fw-bold text-uppercase text-muted ls-1">Informasi Bank</label>
-
-                            <div class="mb-3">
-                                <label class="form-label text-dark small mb-1">Nama Bank</label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-light border-end-0 text-secondary"><i
-                                            class="bi bi-bank"></i></span>
-                                    <input type="text" name="nama_bank" class="form-control border-start-0 ps-0"
-                                        value="{{ $toko->nama_bank }}" placeholder="Contoh: BCA / GoPay">
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label text-dark small mb-1">Nomor Rekening</label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-light border-end-0 text-secondary"><i
-                                            class="bi bi-credit-card-2-front"></i></span>
-                                    <input type="text" name="nomor_rekening"
-                                        class="form-control border-start-0 ps-0 fw-bold text-dark fs-5"
-                                        value="{{ $toko->nomor_rekening }}" placeholder="1234567890">
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label text-dark small mb-1">Atas Nama</label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-light border-end-0 text-secondary"><i
-                                            class="bi bi-person"></i></span>
-                                    <input type="text" name="atas_nama" class="form-control border-start-0 ps-0"
-                                        value="{{ $toko->atas_nama }}" placeholder="Nama Pemilik Rekening">
-                                </div>
-                            </div>
-                        </div>
-
-                        <hr class="border-secondary border-opacity-10 my-4">
-
-                        <div class="mb-4">
-                            <label class="form-label small fw-bold text-uppercase text-muted ls-1 mb-3">Scan QRIS</label>
-
-                            <div class="d-flex align-items-start gap-4">
-                                <div class="text-center">
-                                    <div class="border rounded-3 p-2 bg-light mb-2 d-flex align-items-center justify-content-center"
-                                        style="width: 120px; height: 120px; overflow: hidden;">
-                                        @if ($toko && $toko->foto_qris)
-                                            <img src="{{ asset('storage/' . $toko->foto_qris) }}"
-                                                class="w-100 h-100 object-fit-contain rounded-2">
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="bg-light">
+                            <tr>
+                                <th>Bank / E-Wallet</th>
+                                <th>Nomor Rekening</th>
+                                <th>Atas Nama</th>
+                                <th>QRIS</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($rekenings as $item)
+                                <tr>
+                                    <td class="fw-bold">{{ $item->nama_bank }}</td>
+                                    <td class="font-monospace">{{ $item->nomor_rekening }}</td>
+                                    <td>{{ $item->atas_nama }}</td>
+                                    <td>
+                                        @if ($item->foto_qris)
+                                            <img src="{{ asset('gambar/' . $item->foto_qris) }}" width="40"
+                                                class="rounded border">
                                         @else
-                                            <div class="text-muted small text-center">
-                                                <i class="bi bi-qr-code fs-3 d-block opacity-50 mb-1"></i>
-                                                Belum ada
-                                            </div>
+                                            <span class="badge bg-light text-muted border">No QRIS</span>
                                         @endif
-                                    </div>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal"
+                                            data-bs-target="#modalEdit{{ $item->id }}">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
 
-                                    <small class="text-muted d-block mb-1" style="font-size: 0.7rem;">Preview Saat
-                                        Ini</small>
-
-                                    @if ($toko && $toko->foto_qris)
-                                        <form action="{{ route('admin.settings.delete_qris') }}" method="POST"
-                                            onsubmit="return confirm('Yakin mau menghapus QRIS ini?');">
+                                        <form action="{{ route('settings.destroy', $item->id) }}" method="POST"
+                                            class="d-inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-link text-danger text-decoration-none p-0"
-                                                style="font-size: 0.7rem;">
-                                                <i class="bi bi-trash-fill"></i> Hapus
+                                            <button type="submit" class="btn btn-sm btn-danger"
+                                                onclick="return confirm('Yakin hapus rekening ini?')">
+                                                <i class="bi bi-trash"></i>
                                             </button>
                                         </form>
-                                    @endif
-                                </div>
+                                    </td>
+                                </tr>
 
-                                <div class="flex-grow-1">
-                                    <label class="form-label text-dark small mb-1">Upload Gambar Baru</label>
-                                    <input type="file" name="foto_qris" class="form-control form-control-sm mb-2"
-                                        accept="image/*">
-                                    <div class="alert alert-info border-0 d-flex align-items-center p-2 mb-0"
-                                        role="alert">
-                                        <i class="bi bi-info-circle-fill fs-6 me-2"></i>
-                                        <div style="font-size: 0.75rem; line-height: 1.2;">
-                                            Pastikan QR code terbaca jelas. Format JPG/PNG, maks 2MB.
+                                <div class="modal fade" id="modalEdit{{ $item->id }}" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Edit Rekening</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <form action="{{ route('settings.update', $item->id) }}" method="POST"
+                                                enctype="multipart/form-data">
+                                                @csrf
+                                                @method('PUT')
+                                                <div class="modal-body">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Nama Bank / E-Wallet</label>
+                                                        <input type="text" name="nama_bank" class="form-control"
+                                                            value="{{ $item->nama_bank }}" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Nomor Rekening</label>
+                                                        <input type="text" name="nomor_rekening" class="form-control"
+                                                            value="{{ $item->nomor_rekening }}" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Atas Nama</label>
+                                                        <input type="text" name="atas_nama" class="form-control"
+                                                            value="{{ $item->atas_nama }}" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Ganti Foto QRIS (Opsional)</label>
+                                                        <input type="file" name="foto_qris" class="form-control"
+                                                            accept="image/*">
+                                                        <small class="text-muted">Biarkan kosong jika tidak ingin mengganti
+                                                            gambar.</small>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Batal</button>
+                                                    <button type="submit" class="btn btn-orange fw-bold shadow-sm">Simpan Perubahan</button>
+                                                </div>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn btn-orange w-100 py-2 rounded-pill fw-bold shadow-sm">
-                            <i class="bi bi-save me-2"></i> Simpan Perubahan
-                        </button>
-                    </form>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalTambah" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold">Tambah Rekening Baru</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="{{ route('settings.store') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Nama Metode</label>
+                            <input type="text" name="nama_bank" class="form-control"
+                                placeholder="Contoh: QRIS, BCA, Dana" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Nomor Rekening (Opsional)</label>
+                            <input type="text" name="nomor_rekening" class="form-control"
+                                placeholder="Kosongkan jika hanya upload QRIS">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Atas Nama (Opsional)</label>
+                            <input type="text" name="atas_nama" class="form-control"
+                                placeholder="Kosongkan jika hanya upload QRIS">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Foto QRIS</label>
+                            <input type="file" name="foto_qris" class="form-control" accept="image/*">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-orange fw-bold shadow-sm">Simpan</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

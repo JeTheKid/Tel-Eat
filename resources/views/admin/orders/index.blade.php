@@ -1,7 +1,7 @@
 @extends('layouts.sidebar')
 
-@section('title', 'Pesanan Masuk')
-@section('page-title', 'Daftar Pesanan Masuk')
+@section('title', 'Orders')
+@section('page-title', 'Orders')
 
 @section('content')
 
@@ -62,7 +62,7 @@
                                 <div class="fw-bold text-dark mb-1">Rp {{ number_format($order->total_harga, 0, ',', '.') }}
                                 </div>
                                 @if ($order->bukti_bayar)
-                                    <a href="{{ asset('storage/' . $order->bukti_bayar) }}" target="_blank"
+                                    <a href="{{ asset('gambar/' . $order->bukti_bayar) }}" target="_blank"
                                         class="btn btn-sm btn-light border text-primary shadow-sm py-0 px-2"
                                         style="font-size: 0.75rem;">
                                         <i class="bi bi-image me-1"></i> Lihat Bukti

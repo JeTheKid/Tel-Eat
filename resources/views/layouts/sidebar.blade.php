@@ -37,8 +37,8 @@
                         <i class="bi bi-cart-check me-2"></i> Pesanan Masuk
                     </a>
 
-                    <a class="nav-link {{ Request::routeIs('admin.settings.*') ? 'active' : '' }}"
-                        href="{{ route('admin.settings.index') }}">
+                    <a class="nav-link {{ Request::routeIs('settings.*') ? 'active' : '' }}"
+                        href="{{ route('settings.index') }}">
                         <i class="bi bi-gear me-2"></i> Pengaturan
                     </a>
 

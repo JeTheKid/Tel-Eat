@@ -1,7 +1,8 @@
 <nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
     <div class="container">
-        <a class="navbar-brand fw-bold" href="{{ route('katalog') }}" style="color: #ff7e00;">
-            <i class="bi bi-egg-fried"></i> Tel-Eat </a>
+        <a class="navbar-brand fw-bold" href="{{ route('landing') }}" style="color: #ff7e00;">
+            <i class="bi bi-egg-fried"></i> Tel-Eat
+        </a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
@@ -15,10 +16,12 @@
                        href="{{ route('katalog') }}">Catalog</a>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link {{ Request::routeIs('riwayat') ? 'active fw-bold text-orange' : '' }}"
-                       href="{{ route('riwayat') }}">History</a>
-                </li>
+                @auth
+                    <li class="nav-item">
+                        <a class="nav-link {{ Request::routeIs('riwayat') ? 'active fw-bold text-orange' : '' }}"
+                           href="{{ route('riwayat') }}">History</a>
+                    </li>
+                @endauth
 
                 <li class="nav-item">
                     <a class="nav-link position-relative {{ Request::routeIs('cart.index') ? 'active text-orange' : '' }}"
@@ -33,22 +36,23 @@
                     </a>
                 </li>
 
+                @auth
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown">
                         @if(auth()->user()->foto_profil)
-                            <img src="{{ asset('storage/' . auth()->user()->foto_profil) }}"
+                            <img src="{{ asset('gambar/' . auth()->user()->foto_profil) }}"
                                  class="rounded-circle object-fit-cover border"
                                  width="35" height="35" alt="User">
                         @else
                             <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center"
                                  style="width: 35px; height: 35px; font-size: 0.8rem;">
-                                {{ substr(auth()->user()->nama ?? 'U', 0, 1) }}
+                                {{ substr(auth()->user()->name ?? 'U', 0, 1) }}
                             </div>
                         @endif
                     </a>
 
                     <ul class="dropdown-menu dropdown-menu-end shadow border-0">
-                        <li><h6 class="dropdown-header">Halo, {{ Str::limit(auth()->user()->nama ?? 'Mahasiswa', 15) }}!</h6></li>
+                        <li><h6 class="dropdown-header">Halo, {{ Str::limit(auth()->user()->name ?? 'Mahasiswa', 15) }}!</h6></li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
                             <a class="dropdown-item" href="{{ route('profile.index') }}">
@@ -65,6 +69,16 @@
                         </li>
                     </ul>
                 </li>
+                @endauth
+
+                @guest
+                <li class="nav-item">
+                    <a href="{{ route('login') }}" class="btn fw-bold text-white rounded-pill px-4 shadow-sm"
+                       style="background-color: #ff7e00; font-size: 0.9rem;">
+                        Login
+                    </a>
+                </li>
+                @endguest
 
             </ul>
         </div>
@@ -74,4 +88,6 @@
 <style>
     .text-orange { color: #ff7e00 !important; }
     .nav-link:hover { color: #ff7e00; }
+    /* efek hover tombol login */
+    .btn:hover { background-color: #e66000 !important; }
 </style>

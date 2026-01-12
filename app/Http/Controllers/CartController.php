@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\ShopSetting;
 use Illuminate\Http\Request;
 use App\Models\Product;
 
@@ -75,17 +75,17 @@ class CartController extends Controller
     // 5. Halaman Checkout
     public function checkoutPage()
     {
+        // 1. Cek Keranjang
         $cart = session()->get('cart');
-
         if (!$cart || count($cart) == 0) {
             return redirect()->route('katalog')->with('error', 'Keranjangmu kosong!');
         }
 
-        //ambil dari database toko
-        $toko = \App\Models\ShopSetting::first();
+        // 2. AMBIL DATA BANK DARI DATABASE
+        $banks = ShopSetting::all();
 
-        // Kirim variabel $toko ke view
-        return view('checkout', compact('cart', 'toko'));
+        // 3. KIRIM KE VIEW
+        return view('checkout', compact('cart', 'banks'));
     }
 
     // 6. PROSES CHECKOUT (Simpan ke Database)
@@ -131,5 +131,35 @@ class CartController extends Controller
 
         // 5. Redirect ke Halaman Sukses
         return redirect()->route('katalog')->with('success', 'Pesanan berhasil dibuat! Tunggu konfirmasi admin.');
+    }
+
+    public function changeQuantity(Request $request)
+    {
+        if($request->id && $request->action) {
+            $cart = session()->get('cart');
+
+            if(isset($cart[$request->id])) {
+
+                // Cek aksi: Mau nambah atau kurang?
+                if($request->action == 'increase') {
+                    $cart[$request->id]['quantity']++;
+                } else if($request->action == 'decrease') {
+                    $cart[$request->id]['quantity']--;
+                }
+
+                // LOGIKA PENTING: Kalau jumlah jadi 0 atau minus, HAPUS.
+                if($cart[$request->id]['quantity'] <= 0) {
+                    unset($cart[$request->id]); // Hapus item
+                    $pesan = 'Menu dihapus dari keranjang.';
+                } else {
+                    $pesan = 'Jumlah pesanan diperbarui!';
+                }
+
+                // Simpan perubahan ke session
+                session()->put('cart', $cart);
+
+                return redirect()->back()->with('success', $pesan);
+            }
+        }
     }
 }

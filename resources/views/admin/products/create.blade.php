@@ -1,7 +1,7 @@
 @extends('layouts.sidebar')
 
-@section('title', 'Tambah Menu')
-@section('page-title', 'Tambah Menu Baru')
+@section('title', 'Add Menu')
+@section('page-title', 'Add Menu')
 
 @section('content')
     <div class="row justify-content-center">

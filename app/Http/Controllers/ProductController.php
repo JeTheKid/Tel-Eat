@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -104,13 +105,38 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
 
-        // Hapus gambar
-        if ($product->gambar) {
-            Storage::disk('public')->delete($product->gambar);
+        // 1. CEK RIWAYAT: Apakah menu pernah dipesan
+        // hitung ID produk di tabel order_details
+        $jumlahPesanan = DB::table('order_details')->where('id_produk', $id)->count();
+
+        if ($jumlahPesanan > 0) {
+            // --- SKENARIO A: SUDAH PERNAH DIPESAN ---
+            // Tidak boleh hapus permanen, nanti laporan keuangan rusak.
+            // Solusi: Ganti Status (Arsip)
+
+            if ($product->status == 'aktif') {
+                $product->update(['status' => 'nonaktif']);
+                $pesan = 'Menu telah DIARSIPKAN';
+            } else {
+                $product->update(['status' => 'aktif']);
+                $pesan = 'Menu berhasil diaktifkan kembali!';
+            }
+
+        } else {
+            // --- SKENARIO B: BELUM PERNAH DIPESAN ---
+            // MENU DIHAPUS.
+
+            // Hapus gambarnya dulu dari folder public/storage
+            if ($product->gambar) {
+                Storage::disk('public')->delete($product->gambar);
+            }
+
+            // Hapus datanya dari database
+            $product->delete();
+
+            $pesan = 'Menu berhasil DIHAPUS PERMANEN (karena belum ada riwayat transaksi).';
         }
 
-        $product->delete();
-
-        return redirect()->route('products.index')->with('success', 'Menu berhasil dihapus!');
+        return redirect()->route('products.index')->with('success', $pesan);
     }
 }
