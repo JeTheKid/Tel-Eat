@@ -8,6 +8,25 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
+
+    <style>
+        /* Hilangkan panah spinner di Chrome, Safari, Edge, Opera */
+        input[type=number]::-webkit-outer-spin-button,
+        input[type=number]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Hilangkan panah di Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        /* angka selalu di tengah biar rapi */
+        .quantity-input {
+            text-align: center;
+        }
+    </style>
 </head>
 
 <body>
@@ -15,10 +34,20 @@
     @include('layouts.navbar')
 
     <div class="container my-5">
+
         @if (session('success'))
-            <div class="alert alert-success border-0 shadow-sm">{{ session('success') }}</div>
+            <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i> {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
         @endif
 
+        @if (session('error'))
+            <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
         <div class="row">
             <div class="col-md-8">
                 <div class="card border-0 shadow-sm rounded-4 mb-3">
@@ -46,11 +75,12 @@
 
                                         <div class="d-flex align-items-center mt-2">
                                             <small class="text-muted me-3">
-                                                Rp {{ number_format($details['price'], 0, ',', '.') }} / porsi
+                                                Rp {{ number_format($details['price'], 0, ',', '.') }}
                                             </small>
 
                                             <div class="input-group input-group-sm shadow-sm rounded-pill overflow-hidden border"
-                                                style="width: 100px;">
+                                                style="width: 120px;">
+
                                                 <form action="{{ route('cart.change_qty') }}" method="POST"
                                                     class="d-flex">
                                                     @csrf
@@ -63,9 +93,9 @@
                                                     </button>
                                                 </form>
 
-                                                <input type="text"
-                                                    class="form-control border-0 text-center bg-white px-0 py-1 fw-bold text-dark"
-                                                    value="{{ $details['quantity'] }}" readonly
+                                                <input type="number" value="{{ $details['quantity'] }}"
+                                                    class="form-control border-0 text-center bg-white px-0 py-1 fw-bold text-dark update-cart-input"
+                                                    data-id="{{ $id }}" min="1"
                                                     style="font-size: 0.9rem;">
 
                                                 <form action="{{ route('cart.change_qty') }}" method="POST"
@@ -83,12 +113,11 @@
                                         </div>
                                     </div>
 
-                                    <div class="fw-bold text-orange me-4 text-end" style="min-width: 80px;">
+                                    <div class="fw-bold text-orange me-4 text-end" style="min-width: 90px;">
                                         Rp {{ number_format($details['price'] * $details['quantity'], 0, ',', '.') }}
                                     </div>
 
-                                    <button
-                                        class="btn btn-sm btn-outline-danger border-0 remove-from-cart rounded-circle p-2"
+                                    <button class="btn btn-sm btn-outline-danger border-0 remove-from-cart"
                                         data-id="{{ $id }}" title="Hapus Menu">
                                         <i class="bi bi-trash"></i>
                                     </button>
@@ -134,7 +163,9 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     <script type="text/javascript">
+        // 1. Script Hapus Barang
         $(".remove-from-cart").click(function(e) {
             e.preventDefault();
             var ele = $(this);
@@ -151,6 +182,29 @@
                     }
                 });
             }
+        });
+
+        // 2. Script Update Manual (Kalau user ngetik angka lalu Enter/Klik Luar)
+        $(".update-cart-input").change(function(e) {
+            e.preventDefault();
+            var ele = $(this);
+
+            $.ajax({
+                url: '{{ route('update_cart') }}',
+                method: "PATCH",
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    id: ele.attr("data-id"),
+                    quantity: ele.val()
+                },
+                success: function(response) {
+                    window.location.reload();
+                },
+                error: function(response) {
+                    // Kalau error (misal koneksi putus), reload juga biar aman
+                    window.location.reload();
+                }
+            });
         });
     </script>
 </body>

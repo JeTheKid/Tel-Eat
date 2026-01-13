@@ -11,10 +11,20 @@ use Illuminate\Support\Facades\DB;
 class ProductController extends Controller
 {
     // 1. TAMPILKAN DAFTAR MENU
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with('category')->latest()->get();
-        return view('admin.products.index', compact('products'));
+        $query = Product::with('category');
+
+        if ($request->has('kategori') && $request->kategori != '') {
+            $query->where('id_kategori', $request->kategori);
+        }
+
+        // GANTI INI: Dari paginate(10) jadi get()
+        $products = $query->latest()->get();
+
+        $categories = Category::all();
+
+        return view('admin.products.index', compact('products', 'categories'));
     }
 
     // 2. FORM TAMBAH

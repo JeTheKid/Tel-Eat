@@ -6,14 +6,21 @@
 
 body {
     background-color: #f8f9fa;
-    font-family: 'Segoe UI', sans-serif;
+    font-family: "Segoe UI", sans-serif;
 }
 
 /* --- UTILITIES (Bisa dipake di mana aja) --- */
-.text-orange { color: var(--primary-orange) !important; }
-.bg-orange { background-color: var(--primary-orange) !important; color: white; }
+.text-orange {
+    color: var(--primary-orange) !important;
+}
+.bg-orange {
+    background-color: var(--primary-orange) !important;
+    color: white;
+}
 
-.cursor-pointer { cursor: pointer; }
+.cursor-pointer {
+    cursor: pointer;
+}
 
 /* --- BUTTONS --- */
 .btn-orange {
@@ -75,14 +82,15 @@ body {
 
 .category-badge {
     position: absolute;
-    top: 10px; left: 10px;
+    top: 10px;
+    left: 10px;
     background: rgba(255, 255, 255, 0.9);
     color: #333;
     padding: 5px 10px;
     border-radius: 20px;
     font-size: 0.7rem;
     font-weight: bold;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .price-tag {
@@ -96,9 +104,12 @@ body {
     background-color: var(--primary-orange);
     color: white;
     border: none;
-    width: 40px; height: 40px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transition: 0.2s;
 }
 
@@ -115,7 +126,7 @@ body {
     min-height: 100vh;
     background-color: white;
     border-right: 1px solid #f0f0f0;
-    box-shadow: 2px 0 10px rgba(0,0,0,0.02);
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.02);
 }
 
 /* Link Sidebar */

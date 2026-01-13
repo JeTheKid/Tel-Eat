@@ -22,6 +22,43 @@
         </div>
     @endif
 
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-body py-3">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-orange bg-opacity-10 rounded-circle p-2 me-3 text-white">
+                            <i class="bi bi-list-ul fs-5"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-0">Total Menu: {{ $products->count() }}</h6>
+                            <small class="text-muted">Menampilkan semua menu</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mt-3 mt-md-0">
+                    <form action="{{ route('products.index') }}" method="GET">
+                        <div class="input-group shadow-sm rounded-pill overflow-hidden border">
+                            <span class="input-group-text bg-white border-0 ps-3 text-muted">
+                                <i class="bi bi-funnel"></i>
+                            </span>
+                            <select name="kategori" class="form-select border-0 ps-2" onchange="this.form.submit()"
+                                style="cursor: pointer;">
+                                <option value="">Semua Kategori</option>
+                                @foreach ($categories as $cat)
+                                    <option value="{{ $cat->id_kategori }}"
+                                        {{ request('kategori') == $cat->id_kategori ? 'selected' : '' }}>
+                                        {{ $cat->nama_kategori }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
@@ -60,17 +97,14 @@
                                     </div>
                                 </div>
                             </td>
-
                             <td>
                                 <span class="badge bg-light text-dark border fw-normal px-3 py-2 rounded-pill">
                                     {{ $product->category->nama_kategori ?? 'Uncategorized' }}
                                 </span>
                             </td>
-
                             <td class="fw-bold text-orange">
                                 Rp {{ number_format($product->harga, 0, ',', '.') }}
                             </td>
-
                             <td>
                                 @if ($product->stok <= 5)
                                     <span class="badge bg-danger bg-opacity-10 text-danger px-2 py-1">
@@ -81,7 +115,6 @@
                                         class="text-muted">porsi</small>
                                 @endif
                             </td>
-
                             <td>
                                 @if ($product->status == 'aktif')
                                     <span class="badge bg-success">Aktif</span>
@@ -89,13 +122,11 @@
                                     <span class="badge bg-secondary">Diarsipkan</span>
                                 @endif
                             </td>
-
                             <td class="text-end pe-4">
                                 <a href="{{ route('products.edit', $product->id_produk) }}"
                                     class="btn btn-sm btn-warning me-1">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-
                                 @if ($product->status == 'aktif')
                                     <form action="{{ route('products.destroy', $product->id_produk) }}" method="POST"
                                         class="d-inline">
@@ -137,5 +168,6 @@
                 </tbody>
             </table>
         </div>
+
     </div>
 @endsection
