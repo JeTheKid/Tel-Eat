@@ -16,10 +16,8 @@ class DashboardController extends Controller
         // 1. Total Semua Pesanan Masuk
         $totalPesanan = Order::count();
 
-        // 2. Pendapatan HARI INI (Cuma yang statusnya 'selesai')
-        $pendapatanHariIni = Order::where('status', 'selesai')
-            ->whereDate('updated_at', Carbon::today())
-            ->sum('total_harga');
+        // 2. Total Pendapatan
+        $pendapatanHariIni = Order::where('status', 'selesai')->sum('total_harga');
 
         // 3. Total Menu Tersedia
         $totalMenu = Product::count();
