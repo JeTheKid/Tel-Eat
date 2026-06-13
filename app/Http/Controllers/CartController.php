@@ -23,26 +23,24 @@ class CartController extends Controller
         $product = Product::findOrFail($id);
         $cart = session()->get('cart', []);
 
-        // --- VALIDASI STOK 1: Cek apakah stok habis total? ---
+
         if ($product->stok <= 0) {
             return redirect()->back()->with('error', 'Maaf, stok produk ini sudah habis terjual!');
         }
 
-        // Kalau produk udah ada di keranjang, cek dulu sebelum nambah
         if (isset($cart[$id])) {
-            // --- VALIDASI STOK 2: Cek apakah (jumlah skrg + 1) melebihi stok database? ---
             if (($cart[$id]['quantity'] + 1) > $product->stok) {
                 return redirect()->back()->with('error', 'Stok tidak cukup! Sisa stok hanya: ' . $product->stok);
             }
             $cart[$id]['quantity']++;
         } else {
-            // Kalau belum ada, masukin baru
+
             $cart[$id] = [
                 "name" => $product->nama_produk,
                 "quantity" => 1,
                 "price" => $product->harga,
                 "image" => $product->gambar,
-                "id_produk" => $product->id_produk // ID penting buat validasi nanti
+                "id_produk" => $product->id_produk
             ];
         }
 
